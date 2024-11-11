@@ -1,6 +1,8 @@
 import threading
 import time
 
+lock = threading.Lock()
+
 class MyThread(threading.Thread):
     def __init__(self, name, counter, delay):
         threading.Thread.__init__(self)
@@ -16,7 +18,8 @@ class MyThread(threading.Thread):
 
     def run(self):
         print(f'Поток {self.name} запущен')
-        self.timer(self.name, self.counter, self.delay)
+        with lock:
+            self.timer(self.name, self.counter, self.delay)
         print(f'Поток {self.name} завершен')
 
 
