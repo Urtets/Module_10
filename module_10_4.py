@@ -46,12 +46,16 @@ class Cafe:
             for table in self.tables:
                 if (not table.guest.is_alive()) and (table.guest is not None):
                     print(f'{table.guest.name} покушал(-а) и ушёл(ушла)')
-                    table.guest = None
                     print(f'Стол номер {table.number} свободен')
-                if table.guest is None:
+                    table.guest = None
+
+                if table.guest is None and not self.que.empty():
                     table.guest = self.que.get()
                     print(f'{table.guest.name} вышел(-ла) из очереди и сел(-а) за стол номер {table.number}')
                     table.guest.start()
+                    table.guest.join()
+
+
 
 
 
