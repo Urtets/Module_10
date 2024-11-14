@@ -41,10 +41,11 @@ class Cafe:
             for guest in guest_list:
                 self.que.put(guest)
                 print(f'{guest.name} в очереди')
+
     def discuss_guests(self):
-        while not self.que.empty():
+        while not (self.que.empty()) or self.check_empty():
             for table in self.tables:
-                if (not table.guest.is_alive()) and (table.guest is not None):
+                if not (table.guest is None) and not (table.guest.is_alive()):
                     print(f'{table.guest.name} покушал(-а) и ушёл(ушла)')
                     print(f'Стол номер {table.number} свободен')
                     table.guest = None
@@ -53,10 +54,13 @@ class Cafe:
                     table.guest = self.que.get()
                     print(f'{table.guest.name} вышел(-ла) из очереди и сел(-а) за стол номер {table.number}')
                     table.guest.start()
-                    table.guest.join()
 
 
-
+    def check_empty(self):
+        for table in self.tables:
+            if table.guest is not None:
+                return True
+        return False
 
 
 # Создание столов
@@ -64,8 +68,8 @@ tables = [Table(number) for number in range(1, 6)]
 print(tables)
 # Имена гостей
 guests_names = [
-'Maria', 'Oleg', 'Vakhtang', 'Sergey', 'Darya', 'Arman',
-'Vitoria', 'Nikita', 'Galina', 'Pavel', 'Ilya', 'Alexandra'
+    'Maria', 'Oleg', 'Vakhtang', 'Sergey', 'Darya', 'Arman',
+    'Vitoria', 'Nikita', 'Galina', 'Pavel', 'Ilya', 'Alexandra'
 ]
 # Создание гостей
 # guests = [Guest(name) for name in guests_names]
