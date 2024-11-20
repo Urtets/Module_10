@@ -11,12 +11,7 @@ def write_words(word_count, file_name):
             print(threading.current_thread())
     print(f"Завершилась запись в файл {file_name}")
 
-write_words(10, "example1.txt")
-write_words(30, "example2.txt")
-# thread_2.join()
-write_words(200, "example3.txt")
-# thread_3.join()
-write_words(100, "example4.txt")
+
 # thread_4.join()
 
 
@@ -29,15 +24,21 @@ start_time = time.time()
 
 
 thread_1.start()
-thread_1.join()
+
 thread_2.start()
-thread_2.join()
+
 thread_3.start()
-thread_3.join()
+
 thread_4.start()
 thread_4.join()
-
-
-
+write_words(10, "example1.txt")
+write_words(30, "example2.txt")
+# thread_2.join()
+write_words(200, "example3.txt")
+# thread_3.join()
+write_words(100, "example4.txt")
+thread_1.join()
+thread_2.join()
+thread_3.join()
 
 print(f'Завершилось {round(time.time() - start_time, 5)}')

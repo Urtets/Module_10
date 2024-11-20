@@ -148,10 +148,10 @@ class Exchange(Thread):
                     min_1 = value
                     key_1 = key
                 if min_1 < value < min_2:
-                    max_2 = value
+                    min_2 = value
                     key_2 = key
                 if min_2 < value < min_3:
-                    max_3 = value
+                    min_3 = value
                     key_3 = key
         return [f'{key_1} - {min_1}', f'{key_2} - {min_2}', f'{key_3} - {min_3}']
 
