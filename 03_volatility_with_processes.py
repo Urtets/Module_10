@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import multiprocessing
+import time
 
-
-# Задача: вычислить 3 тикера с максимальной и 3 тикера с минимальной волатильностью в МНОГОПОТОЧНОМ стиле
+# Задача: вычислить 3 тикера с максимальной и 3 тикера с минимальной волатильностью в МНОГОПРОЦЕССНОМ стиле
 #
 # Бумаги с нулевой волатильностью вывести отдельно.
 # Результаты вывести на консоль в виде:
@@ -17,10 +18,9 @@
 #       ТИКЕР7, ТИКЕР8, ТИКЕР9, ТИКЕР10, ТИКЕР11, ТИКЕР12
 # Волатильности указывать в порядке убывания. Тикеры с нулевой волатильностью упорядочить по имени.
 #
-#  Внимание! это задание можно выполнять только после зачета lesson_012/01_volatility.py !!!
+# TODO Внимание! это задание можно выполнять только после зачета lesson_012/02_volatility_with_threads.py !!!
 
-# тут ваш код в многопоточном стиле
-
+# TODO тут ваш код в многопроцессном стиле
 import pandas
 import time
 import queue
@@ -73,7 +73,7 @@ def find_max_stick(dict_of_results):
         if max_2 > value > max_3:
             max_3 = value
             key_3 = key
-    return [f'{key_1} - {max_1}', f'{key_2} - {max_2}', f'{key_3} - {max_3}']
+    print([f'{key_1} - {max_1}', f'{key_2} - {max_2}', f'{key_3} - {max_3}'])
 
 
 def find_min_stick(dict_of_results):
@@ -94,7 +94,7 @@ def find_min_stick(dict_of_results):
             if min_2 < value < min_3:
                 min_3 = value
                 key_3 = key
-    return [f'{key_1} - {min_1}', f'{key_2} - {min_2}', f'{key_3} - {min_3}']
+    print([f'{key_1} - {min_1}', f'{key_2} - {min_2}', f'{key_3} - {min_3}'])
 
 
 def find_zero_stick(dict_of_results):
@@ -106,7 +106,7 @@ def find_zero_stick(dict_of_results):
             zero = value
             key_1 = key
             zero_list_1.append(f'{key_1} - {zero}')
-    return zero_list_1
+    print(zero_list_1)
 
 
 def show_result(dict_of_results):
@@ -115,17 +115,27 @@ def show_result(dict_of_results):
     print(find_zero_stick(dict_of_results))
 
 
-start_time = time.time()
+if __name__ == '__main__':
+    start_time = time.time()
 
-path = 'trades/'
-files = [f for f in listdir(path) if isfile(join(path, f))]
-file_dict = {}
-for file in files:
+    path = 'trades/'
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    file_dict = {}
+    for file in files:
+        ticker_file = pandas.read_csv(path + file)
+        exchange = Exchange(ticker_file, file_dict)
+        exchange.start()
 
-    ticker_file = pandas.read_csv(path + file)
-    exchange = Exchange(ticker_file, file_dict)
-    exchange.start()
+    process_1 = multiprocessing.Process(target=find_max_stick, args=(file_dict,))
+    process_2 = multiprocessing.Process(target=find_min_stick, args=(file_dict,))
+    process_3 = multiprocessing.Process(target=find_zero_stick, args=(file_dict,))
+    process_1.start()
+    process_2.start()
+    process_3.start()
+    process_1.join()
+    process_2.join()
+    process_3.join()
 
-show_result(file_dict)
-end_time = round(time.time() - start_time, 2)
-print(end_time)
+
+    end_time = round(time.time() - start_time, 2)
+    print(end_time)
